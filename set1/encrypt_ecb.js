@@ -6,7 +6,8 @@ let buff = Buffer.from(data, 'base64')
 
 const key = "YELLOW SUBMARINE"
 var decipher = crypto.createDecipheriv('aes-128-ecb', key, null)
-var decrypted = decipher.update(buff, 'base64', 'utf8')
-decrypted += decipher.final('utf-8')
+decipher.setAutoPadding(false);
+var decrypted = decipher.update(buff.slice(0,16))
+decrypted += decipher.final()
 
 console.log(decrypted)

@@ -6,8 +6,8 @@ const corpus_data = fs.readFileSync('./set1/comc.txt',
 function get_freq(data) {
     corpus = {}
     total_chars = data.length / MAG_FACTOR
-    for (var i = 0; i < data.length; i++) {
-        var c = data.charAt(i);
+    for (let i = 0; i < data.length; i++) {
+        let c = data.charAt(i);
         if (c in corpus) {
             corpus[c] = corpus[c] + 1;
         } else {
@@ -49,11 +49,11 @@ for (let key in CORPUS) {
  */
 function hamming(str1, str2) {
   
-  var result = 0
-  for (var i=0; i<str1.length; i++) {
-    var b1 = str1.charCodeAt(i)
-    var b2 = str2.charCodeAt(i)
-    var hamming = b1 ^ b2;
+  let result = 0
+  for (let i=0; i<str1.length; i++) {
+    let b1 = str1.charCodeAt(i)
+    let b2 = str2.charCodeAt(i)
+    let hamming = b1 ^ b2;
     while (hamming > 0) {
       result += 1;
       hamming &= (hamming -1);
@@ -68,9 +68,9 @@ console.assert(hamming("this is a test", "wokka wokka!!!") == 37, "Hamming dista
  * @param {string} data_hex hex encoded string
  */
 function possible_key_sizes(data_hex) {
-  var data = Buffer.from(data_hex, 'hex').toString('utf-8')
-  var arr = [];
-  for (var k=2; k < 40; k++) {
+  let data = Buffer.from(data_hex, 'hex').toString('utf-8')
+  let arr = [];
+  for (let k=2; k < 40; k++) {
     distance = hamming(data.substring(0, 8*k), data.substring(4*k, 8*k)) / k;
     // console.log("substring: ", data.substring(0, 4*k))
     arr.push([k, distance])
@@ -79,13 +79,13 @@ function possible_key_sizes(data_hex) {
 }
 
 function single_key_xor(b) {
-    var str = hex_to_ascii(b);
+    let str = hex_to_ascii(b);
     // console.log("hex is: ", str)
     possible_answers = []
-    for (var n = 1; n < 128; n++) {
-        var ans = '';
-        for (var i = 0; i < str.length; i++) {
-            var c = parseInt(str.charCodeAt(i) ^ n);
+    for (let n = 1; n < 128; n++) {
+        let ans = '';
+        for (let i = 0; i < str.length; i++) {
+            let c = parseInt(str.charCodeAt(i) ^ n);
             if (c >= 128) {
                 ans = '';
                 break;
@@ -104,9 +104,9 @@ function single_key_xor(b) {
 }
 
 function hex_to_ascii(hex) {
-  var h = hex.toString();
-  var ascii = '';
-  for (var n = 0; n < h.length; n += 2) {
+  let h = hex.toString();
+  let ascii = '';
+  for (let n = 0; n < h.length; n += 2) {
       ascii += String.fromCharCode(parseInt(h.substr(n, 2), 16))
   }
   return ascii.toString();
@@ -123,12 +123,12 @@ function hex_to_ascii(hex) {
  */
 function transpose(str1, block_size) {
   transposed_blocks = []
-  for (var i=0; i< block_size; i++) {
+  for (let i=0; i< block_size; i++) {
     transposed_blocks.push('')
   }
   block_counter = 0;
-  for (var i=0; i<str1.length; i+= 2) {
-    var c =  str1.substr(i, 2)
+  for (let i=0; i<str1.length; i+= 2) {
+    let c =  str1.substr(i, 2)
     transposed_blocks[block_counter] += c;
     block_counter = (block_counter + 1) % block_size; 
   }
@@ -137,7 +137,7 @@ function transpose(str1, block_size) {
 
 // console.log(transpose("1d421f4d0b0f021f", 3))
 function zip() {
-  var args = [].slice.call(arguments);
+  let args = [].slice.call(arguments);
   args = args.slice(0, args.length - 1)
   return args[0].map(function(_,i){
       return args.map(function(array){return array[i]})
@@ -146,11 +146,11 @@ function zip() {
 
 
 function break_decryption(b) {
-  var possible_key_size = possible_key_sizes(b)
+  let possible_key_size = possible_key_sizes(b)
 
   // try top 5 key sizes
   answers = []
-  for (var i=0; i<3; i++) {
+  for (let i=0; i<3; i++) {
     key_size = possible_key_size[i][0]
     blocks = transpose(b, key_size)
     possible_key = '';
@@ -175,9 +175,9 @@ function break_decryption(b) {
  * Returns a utf-8 string
  */
 function repeating_xor(input, key) {
-  var ans = '';
-  var key_len = key.length;
-  for (var i = 0; i < input.length; i+=2) {
+  let ans = '';
+  let key_len = key.length;
+  for (let i = 0; i < input.length; i+=2) {
     ans += String.fromCharCode(parseInt(input.substr(i, 2), 16) ^ key.charCodeAt((i/2) % key_len))
   }
   return ans.toString()

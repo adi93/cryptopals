@@ -8,8 +8,8 @@ const data = fs.readFileSync('./set1/comc.txt',
 function get_freq(data) {
     corpus = {}
     total_chars = data.length / MAG_FACTOR
-    for (var i = 0; i < data.length; i++) {
-        var c = data[i];
+    for (let i = 0; i < data.length; i++) {
+        let c = data[i];
         if (c in corpus) {
             corpus[c] = corpus[c] + 1;
         } else {
@@ -47,10 +47,10 @@ for (let key in CORPUS) {
 
 function xor(str) {
     possible_answers = []
-    for (var n = 1; n < 128; n++) {
-        var ans = [];
-        for (var i = 0; i < str.length; i++) {
-            var c = str[i] ^ n;
+    for (let n = 1; n < 128; n++) {
+        let ans = [];
+        for (let i = 0; i < str.length; i++) {
+            let c = str[i] ^ n;
             if (c >= 128) {
                 ans = '';
                 break;
