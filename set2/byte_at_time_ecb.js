@@ -23,9 +23,11 @@ function createOracle(key, unknown_arr) {
     }
 
     this.pad_block = function pad_block(block, block_length) {
-        let remainder = block_length - block.length
+        let remainder = block.length - block_length
         if (remainder <= 0) {
-            return block
+            remainder = -remainder
+        } else {
+            remainder = block_length - remainder % block_length
         }
         let padding_char = remainder;
         for (var i=0; i< remainder; i++) {
@@ -34,8 +36,6 @@ function createOracle(key, unknown_arr) {
         return block
     }
 }
-o = new createOracle("RandomKey", "")
-console.log(o.pad_block([1], 3))
 
 
 function recover_next_byte(decoded, oracle) {

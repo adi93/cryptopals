@@ -58,8 +58,11 @@ function encode(profile_object) {
 }
 
 
-let first_encrypted_profile = profile_for("adi93@uci.edu") // Lol, This worked by chance, as this has exactly 
+let first_encrypted_profile = profile_for("adi93@uci.edu") // Lol, This worked by chance, as this has exactly 13 chars
+let decrypted_profile = decrypt_aes_128(first_encrypted_profile)
+decrypted_profile
 let second_profile = Buffer.concat([Buffer.from(Array(10).fill(10)), Buffer.from("admin"), Buffer.from(Array(11).fill(11))])
+second_profile
 let second_encrypted_profile = profile_for(second_profile.toString())
 
 let x = decrypt_aes_128(Buffer.concat([first_encrypted_profile.slice(0, 32), second_encrypted_profile.slice(16, 32)]))

@@ -1,8 +1,10 @@
 // Challenege 9
 function pad_block(block, block_length) {
-    remainder = block_length - block.length
+    let remainder = block.length - block_length
     if (remainder <= 0) {
-        return
+        remainder = -remainder
+    } else {
+        remainder = block_length - remainder % block_length
     }
     let padding_char = remainder;
     for (var i=0; i< remainder; i++) {
