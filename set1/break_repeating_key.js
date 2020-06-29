@@ -1,11 +1,13 @@
+// challenge 6
+"use strict";
 const fs = require("fs")
 const MAG_FACTOR = 100;
 const corpus_data = fs.readFileSync('./set1/comc.txt',
     { encoding: 'utf8', flag: 'r' });
 
 function get_freq(data) {
-    corpus = {}
-    total_chars = data.length / MAG_FACTOR
+    let corpus = {}
+    let total_chars = data.length / MAG_FACTOR
     for (let i = 0; i < data.length; i++) {
         let c = data.charAt(i);
         if (c in corpus) {
@@ -21,10 +23,10 @@ function get_freq(data) {
 }
 
 function get_freq_score(str, corpus) {
-    str_corpus = get_freq(str)
-    score = 0.0;
+    let str_corpus = get_freq(str)
+    let score = 0.0;
     for (let key in str_corpus) {
-        corpus_score = corpus[key]
+        let corpus_score = corpus[key]
         if (corpus_score == undefined) {
             continue
         }
@@ -71,7 +73,7 @@ function possible_key_sizes(data_hex) {
   let data = Buffer.from(data_hex, 'hex').toString('utf-8')
   let arr = [];
   for (let k=2; k < 40; k++) {
-    distance = hamming(data.substring(0, 8*k), data.substring(4*k, 8*k)) / k;
+    let distance = hamming(data.substring(0, 8*k), data.substring(4*k, 8*k)) / k;
     // console.log("substring: ", data.substring(0, 4*k))
     arr.push([k, distance])
   }
@@ -81,7 +83,7 @@ function possible_key_sizes(data_hex) {
 function single_key_xor(b) {
     let str = hex_to_ascii(b);
     // console.log("hex is: ", str)
-    possible_answers = []
+    let possible_answers = []
     for (let n = 1; n < 128; n++) {
         let ans = '';
         for (let i = 0; i < str.length; i++) {
@@ -93,7 +95,7 @@ function single_key_xor(b) {
             ans += String.fromCharCode(c);
         }
         if (ans != '') {
-            ans_score = get_freq_score(ans, CORPUS)
+            let ans_score = get_freq_score(ans, CORPUS)
             // console.log(n, ans_score, ans)
             possible_answers.push([ans, ans_score, n])
         }
@@ -122,11 +124,11 @@ function hex_to_ascii(hex) {
  * @param {int} block_size block size
  */
 function transpose(str1, block_size) {
-  transposed_blocks = []
+  let transposed_blocks = []
   for (let i=0; i< block_size; i++) {
     transposed_blocks.push('')
   }
-  block_counter = 0;
+  let block_counter = 0;
   for (let i=0; i<str1.length; i+= 2) {
     let c =  str1.substr(i, 2)
     transposed_blocks[block_counter] += c;
@@ -149,21 +151,21 @@ function break_decryption(b) {
   let possible_key_size = possible_key_sizes(b)
 
   // try top 5 key sizes
-  answers = []
+  let answers = []
   for (let i=0; i<3; i++) {
-    key_size = possible_key_size[i][0]
-    blocks = transpose(b, key_size)
-    possible_key = '';
-    for (block in blocks) {
-      c = single_key_xor(blocks[block])
+    let key_size = possible_key_size[i][0]
+    let blocks = transpose(b, key_size)
+    let possible_key = '';
+    for (let block in blocks) {
+      let c = single_key_xor(blocks[block])
       possible_key += String.fromCharCode(c)
     }
     // console.log("key size:", key_size, " key:", possible_key)
-    decoded = repeating_xor(b, possible_key)
+    let decoded = repeating_xor(b, possible_key)
     answers.push([get_freq_score(decoded, CORPUS), key_size, possible_key, decoded])
   }
   answers.sort((a,b) => b[0] - a[0])
-  ans = answers[0]
+  let ans = answers[0]
   console.log("Key size:", ans[1], "KEY:["+ans[2]+"] Content:", ans[3])
 }
 
@@ -186,7 +188,7 @@ function repeating_xor(input, key) {
 
 const data = fs.readFileSync('./set1/6.txt',
     { encoding: 'utf8', flag: 'r' });
-data_hex = Buffer.from(data, 'base64').toString('hex')
+let data_hex = Buffer.from(data, 'base64').toString('hex')
 // console.log(possible_key_sizes(data_hex))
 break_decryption(data_hex)
 // console.log(data_hex)

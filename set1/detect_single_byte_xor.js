@@ -1,13 +1,15 @@
+// challenge 4
+"use strict";
 const fs = require("fs"), readline = require('readline');
 const MAG_FACTOR = 100;
 const CORPUS_DATA = fs.readFileSync('./set1/comc.txt',
     { encoding: 'utf8', flag: 'r' });
 
 function get_freq(data) {
-    corpus = {}
-    total_chars = data.length / MAG_FACTOR
-    for (var i = 0; i < data.length; i++) {
-        var c = data[i];
+    let corpus = {}
+    let total_chars = data.length / MAG_FACTOR
+    for (let i = 0; i < data.length; i++) {
+        let c = data[i];
         if (c in corpus) {
             corpus[c] = corpus[c] + 1;
         } else {
@@ -21,10 +23,10 @@ function get_freq(data) {
 }
 
 function get_freq_score(str, corpus) {
-    str_corpus = get_freq(Buffer.from(str, 'utf-8').toString())
-    score = 0.0;
+    let str_corpus = get_freq(Buffer.from(str, 'utf-8').toString())
+    let score = 0.0;
     for (let key in str_corpus) {
-        corpus_score = corpus[key]
+        let corpus_score = corpus[key]
         if (corpus_score == undefined) {
             continue
         }
@@ -44,11 +46,11 @@ for (let key in CORPUS) {
 }
 
 function xor(str) {
-    possible_answers = []
-    for (var n = 1; n < 128; n++) {
-        var ans = [];
-        for (var i = 0; i < str.length; i++) {
-            var c = str[i] ^ n;
+    let possible_answers = []
+    for (let n = 1; n < 128; n++) {
+        let ans = [];
+        for (let i = 0; i < str.length; i++) {
+            let c = str[i] ^ n;
             if (c >= 128) {
                 ans = '';
                 break;
@@ -56,7 +58,7 @@ function xor(str) {
             ans.push(c);
         }
         if (ans != []) {
-            ans_score = get_freq_score(ans, CORPUS)
+            let ans_score = get_freq_score(ans, CORPUS)
             // console.log(n, ans_score, ans)
             possible_answers.push([ans, ans_score, n])
         }
@@ -68,21 +70,21 @@ function xor(str) {
     return [[], 0, '']
 }
 
-var answers = []
-var rd = readline.createInterface({
+let answers = []
+let rd = readline.createInterface({
     input: fs.createReadStream('./set1/4.txt')
 });
-var line_number = 0
+let line_number = 0
 rd.on('line', function (line) {
-    var l = Buffer.from(line, 'hex')
-    var decrypted = xor(l)
+    let l = Buffer.from(line, 'hex')
+    let decrypted = xor(l)
     decrypted.push(line_number)
     answers.push(decrypted)
     line_number += 1;
 })
 rd.on('close', function () {
     answers.sort((a, b) => b[1] - a[1])
-    ans = answers[0]
+    let ans = answers[0]
     console.log("Line:", ans[3] + 1, "Content:", Buffer.from(ans[0]).toString(),
         "Key:", String.fromCharCode(ans[2]))
 })
