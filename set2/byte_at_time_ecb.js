@@ -1,4 +1,5 @@
-// Challenge 12
+// challenge 12
+"use strict";
 crypto = require("crypto")
 function generate_random_bytes(size) {
     return crypto.randomBytes(size)
@@ -53,6 +54,8 @@ function recover_next_byte(decoded, oracle) {
             return i
         }
     }
+    return 0
+
     function compare_blocks(block1, block2) {
         for (let j=0; j < oracle.block_size; j++) {
             if (block1[j] != block2[j]) {
@@ -61,7 +64,6 @@ function recover_next_byte(decoded, oracle) {
         }
         return true
     }
-    return 0
 }
 
 

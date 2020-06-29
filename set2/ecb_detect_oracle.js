@@ -1,17 +1,16 @@
 // Challenge 11
-crypto = require("crypto")
+"use strict";
+let crypto = require("crypto")
 function detect_ecb(buff) {
     let block_size = 16
-    let m = new Map()
+    let m = new Set()
     for (let i = 0; i < buff.length; i += block_size) {
-        block = buff.slice(i, i + block_size).toString()
-        count = m.get(block)
-        if (count == undefined || count == null) {
-            m.set(block, 1)
-        } else {
+        let block = buff.slice(i, i + block_size).toString()
+        if (m.has(block)) {
             return true
+        } else {
+            m.add(block)
         }
-        
     }
     return false;
 }
@@ -47,11 +46,11 @@ function encrypt_randomly(buff, mode) {
     return encrypted
 }
 
-mode = 'ECB'
-message = []
+let mode = 'ECB'
+let message = []
 for (let i=0; i < 200; i++) {
     message.push('A'.charCodeAt(0))
 }
-encrypted = encrypt_randomly(Buffer.from(message), mode)
-detect_ecb = detect_ecb(Buffer.from(encrypted))
-console.assert (mode == 'ECB'? detect_ecb : !detect_ecb)
+let encrypted = encrypt_randomly(Buffer.from(message), mode)
+let ecb_detected = detect_ecb(Buffer.from(encrypted))
+console.assert(mode == 'ECB'? ecb_detected : !ecb_detected)

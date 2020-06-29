@@ -1,4 +1,5 @@
 // Challenge 10
+"use strict";
 const crypto = require('crypto')
 const fs = require("fs")
 const { assert } = require('console')
@@ -10,8 +11,8 @@ const key = "YELLOW SUBMARINE"
 function decrypt_cbc(buff, key, iv) {
     assert(buff.length % 8 == 0, "Buffer length should be a buffer of 8")
     let block_size = key.length
-    prev_xor = iv;
-    decrypted_buff = []
+    let prev_xor = iv;
+    let decrypted_buff = []
     let decipher = crypto.createDecipheriv('aes-128-ecb', key, null)
     decipher.setAutoPadding(false);
     for (let i=0; i<buff.length; i+=block_size) {
@@ -27,15 +28,12 @@ function decrypt_cbc(buff, key, iv) {
 }
 
 function xor(buf1, str) {
-    ans = []
+    let ans = []
     for (let i=0; i<buf1.length; i++) {
         ans.push(buf1[i] ^ str[i])
     }
     return ans
 }
-let iv = []
-for (let i=0; i<16; i++) {
-    iv.push(0)
-}
-decrypted = decrypt_cbc(buff, key, iv)
-console.log(Buffer.from(decrypted, 'utf-8').toString())
+let iv = "\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"
+let decrypted = decrypt_cbc(buff, key, iv)
+console.log(Buffer.from(decrypted).toString())

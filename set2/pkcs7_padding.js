@@ -1,5 +1,7 @@
 // Challenege 9
-function pad_block(block, block_length) {
+"use strict";
+function pad_block(input, block_length) {
+    let block = Array.from(Buffer.from(input))
     let remainder = block.length - block_length
     if (remainder <= 0) {
         remainder = -remainder
@@ -10,5 +12,10 @@ function pad_block(block, block_length) {
     for (var i=0; i< remainder; i++) {
         block.push(padding_char)
     }
-    return block
+    return Buffer.from(block).toString()
 }
+
+let input = "ICE ICE BABY"
+let padded_input = pad_block(input, 16)
+padded_input
+console.assert(padded_input == "ICE ICE BABY\x04\x04\x04\x04")
