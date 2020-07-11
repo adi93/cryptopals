@@ -1,18 +1,14 @@
-// challenge 16
+// challenge 27
 crypto = require("crypto")
-const iv = "\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"
 class oracle {
     constructor(key) {
         this.key = key
+        this.iv = key
     }
     encrypt_aes = function encrypt_aes(str) {
-        const prefix = "comment1=cooking%20MCs;userdata="
-        const suffix = ";comment2=%20like%20a%20pound%20of%20bacon"
-        
-        str = this.convert(prefix + this.santize(str) + suffix)
         let known_buff = Buffer.from(this.pad_block(str, 16))
         let c = known_buff.length
-        let cipher = crypto.createCipheriv('aes-128-cbc', this.key, iv)
+        let cipher = crypto.createCipheriv('aes-128-cbc', this.key, this.iv)
         cipher.setAutoPadding(false)
         let encrypted = cipher.update(known_buff)
         encrypted = Buffer.concat([encrypted, cipher.final()])
@@ -39,12 +35,9 @@ class oracle {
         return str.split('').map(ch => ch.charCodeAt(0))
     }
     
-    santize(str) {
-        return str.replace(';', '\x01').replace('=', '\x02')
-    }
-    
     decrypt_aes(encrypted) {
-        let cipher = crypto.createDecipheriv('aes-128-cbc', this.key, iv)
+        encrypted = Buffer.from(encrypted)
+        let cipher = crypto.createDecipheriv('aes-128-cbc', this.key, this.iv)
         cipher.setAutoPadding(false)
         let decrypted = cipher.update(encrypted)
         decrypted = Buffer.concat([decrypted, cipher.final()])
@@ -52,34 +45,29 @@ class oracle {
        return decrypted
     
     }
-
-    isAdmin(encrypted) {
-        let decrypted = this.decrypt_aes(encrypted)
-        return decrypted.toString().includes(";admin=true;")
-    }
     
 }
 
-let key = "RandomKeeeeeeeey"
-oracle = new oracle(key)
+// If cipertext is C1, 0, C1, then
+// P1 = E(C1, K) xor K
+// P2 = E(C0, K) xor C1
+// P3 = E(C1, K) xor 0 = E(C1, K)
+// Therefore, P1 xor P3 = K. Wtf....
 
-let supplied = '1234123412341234'
-let desired = ';admin=true;2345'
-console.log(desired.length)
+let plainText = "YELLOW SUBMARINE GREEN SUBMARINE BLACK SUBMARINE"
+let o = new oracle("Random Keeeeeeey")
 
-let a = oracle.encrypt_aes(supplied, key)
-target_block = a.slice(16,32)
+let encrypted = o.encrypt_aes(plainText)
+encrypted = encrypted.slice(0,16).concat(Array(16).fill(0)).concat(encrypted.slice(0,16))
 
-// create attack block
-let new_block = []
-for (let i=0; i< 16; i++) {
-    new_block.push(supplied.charCodeAt(i) ^ desired.charCodeAt(i) ^ target_block[i])
+let decrypted = o.decrypt_aes(encrypted)
+
+function xor(a1, a2) {
+    let xored = Array(a1.length)
+    for (let i=0; i < a1.length; i+=1) {
+        xored[i] = a1[i] ^ a2[i]
+    }
+    return xored
 }
-
-// replace it with original block
-for (let i=0; i<16; i++) {
-    a[i+16] = new_block[i]
-}
-
-b = oracle.isAdmin(Buffer.from(a))
-b
+let key = xor(decrypted.slice(0,16), decrypted.slice(32,48))
+console.log(key.map(c => String.fromCharCode(c)).join(''))

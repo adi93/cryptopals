@@ -9,7 +9,7 @@ let buff = Buffer.from(data, 'base64')
 
 const key = "YELLOW SUBMARINE"
 function decrypt_cbc(buff, key, iv) {
-    assert(buff.length % 8 == 0, "Buffer length should be a buffer of 8")
+    assert(buff.length % 16 == 0, "Buffer length should be a buffer of 16")
     let block_size = key.length
     let prev_xor = iv;
     let decrypted_buff = []

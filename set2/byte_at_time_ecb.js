@@ -24,6 +24,7 @@ function createOracle(key, unknown_arr) {
     }
 
     this.pad_block = function pad_block(block, block_length) {
+        if (block.length % block_length == 0) return block
         let remainder = block.length - block_length
         if (remainder <= 0) {
             remainder = -remainder
@@ -31,7 +32,7 @@ function createOracle(key, unknown_arr) {
             remainder = block_length - remainder % block_length
         }
         let padding_char = remainder;
-        for (var i=0; i< remainder; i++) {
+        for (let i = 0; i < remainder; i++) {
             block.push(padding_char)
         }
         return block

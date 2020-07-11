@@ -1,7 +1,8 @@
 // Challenege 9
 "use strict";
-function pad_block(input, block_length) {
+function padBlock(input, block_length) {
     let block = Array.from(Buffer.from(input))
+    if (block.length % block_length == 0) return block
     let remainder = block.length - block_length
     if (remainder <= 0) {
         remainder = -remainder
@@ -9,10 +10,10 @@ function pad_block(input, block_length) {
         remainder = block_length - remainder % block_length
     }
     let padding_char = remainder;
-    for (var i=0; i< remainder; i++) {
+    for (let i = 0; i < remainder; i++) {
         block.push(padding_char)
     }
-    return Buffer.from(block).toString()
+    return block
 }
 
 let input = "ICE ICE BABY"
