@@ -25,3 +25,5 @@ Set 2:
 * Challenge 14 - TODO
 * [Challenge 15 - PKCS#7 padding validation](set2/pkcs7_padding_validation.js)
 * [Challenge 16 - CBC bitflipping attack](set2/cbc_bitflip.js)
+
+Set 3:
