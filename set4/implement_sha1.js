@@ -1,40 +1,44 @@
 // challenge 28
+
 function createSHA1() {
     if (!new.target) {
         return new createSHA1()
     }
+    
     this.uint32 = require('uint32');
 
     this.leftRotate = function leftRotate(n, d) {
         return this.uint32.rotateLeft(n, d);
     }
 
-    this.encrypt = function encrypt(mesg) {
-        let h0 = 0x67452301
-        let h1 = 0xEFCDAB89
-        let h2 = 0x98BADCFE
-        let h3 = 0x10325476
-        let h4 = 0xC3D2E1F0
 
-        let ml = mesg.length*8
+    this.mask = function(value) {
+        return value >>> 0
+    }
+
+    this.paddingSize = function(len) {
+        for (let i=0; i<64; i+=1) {
+            if ((i+8+len)%64 == 0) {
+                return i
+            }
+        }
+    }
+
+    this.encrypt = function encrypt(mesg) {
+        let h0 = this.uint32.toUint32(0x67452301)
+        let h1 = this.uint32.toUint32(0xEFCDAB89)
+        let h2 = this.uint32.toUint32(0x98BADCFE)
+        let h3 = this.uint32.toUint32(0x10325476)
+        let h4 = this.uint32.toUint32(0xC3D2E1F0)
+
+        let len = mesg.length
+
         mesg = Array.from(mesg).map(ch => ch.charCodeAt(0))
         mesg.push(128)
-        let desiredLength = Math.ceil(((ml/8)+9)/64)*64
-        desiredLength
-        console.log(mesg.length)
+        mesg = mesg.concat(Array(this.paddingSize(len+1)).fill(0))
+        let ml = len*8
+        mesg = mesg.concat([0,0,0,0,(ml&0xFF000000)>>24, (ml&0xFF0000)>>16, (ml&0xFF00)>>8, ml&0xFF])
 
-        console.log(desiredLength-8-(mesg.length%56))
-        let temp = (desiredLength-8-(mesg.length%56))
-        for (let i=0; i < temp; i+= 1) {
-            mesg.push(0)
-        }
-        console.log(mesg.length)
-
-
-        let bit64ml =  [0,0,0,0,(ml >> 24), ((ml <<8) >> 24 ), ((ml << 16) >> 24), ((ml << 24) >> 24)].map(ch => String.fromCharCode(ch)).join('')
-        mesg = Buffer.concat([Buffer.from(mesg), Buffer.from(bit64ml)])
-
-        
         for (let k=0; k<mesg.length; k+=64) {
             let chunk = mesg.slice(k, k+64)
             let words = Array(80)
@@ -72,35 +76,25 @@ function createSHA1() {
                     k = 0xCA62C1D6
                 }
 
-                temp = (this.leftRotate(a,5) + f + e + k + words[i])  & 0xFFFFFFFF
+                temp = this.mask(this.leftRotate(a,5) + f + e + k + words[i])
                 e = d
                 d = c
-                c = this.leftRotate(b, 30) & 0xFFFFFFFF
+                c = this.mask(this.leftRotate(b, 30))
                 b = a
                 a = temp
-
             }
 
-            h0 = h0 + a
-            h1 = h1 + b
-            h2 = h2 + c
-            h3 = h3 + d
-            h4 = h4 + e
+            h0 = this.mask(h0 + a)
+            h1 = this.mask(h1 + b)
+            h2 = this.mask(h2 + c)
+            h3 = this.mask(h3 + d)
+            h4 = this.mask(h4 + e)
         }
-        h0
-        h1
-        h2
-        h3
-        h4
-        
         return (BigInt(h0) << 128n) | (BigInt(h1) << 96n) | (BigInt(h2) << 64n) | (BigInt(h3) << 32n) | BigInt(h4)
     }
 }
 
 let s = new createSHA1()
-
-let sampleText = "Hello WorldYELLOW SUBMARINEHello WorldYELLOW SUBMARINEHello WorldYELLOW SUBMARINEHello WorldYELLOW SUBMARINEHello WorldYELLOW SUBMARINE"
-
 console.log(s.encrypt(sampleText))
 
 
