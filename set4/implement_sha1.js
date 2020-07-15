@@ -98,12 +98,14 @@ function createSHA1() {
 }
 
 let s = new createSHA1()
-console.log(s.encrypt("Hello World").toString(16).padStart(40, 0))
-58814527086678835124646218365765974827431397072
-58814527086678835124646218365765974827431397072
+
+let sampleText = "Hello WorldYELLOW SUBMARINEHello WorldYELLOW SUBMARINEHello WorldYELLOW SUBMARINEHello WorldYELLOW SUBMARINEHello WorldYELLOW SUBMARINE"
+
+console.log(s.encrypt(sampleText))
+
 
 
 let sha = require("crypto").createHash("sha1")
-sha.update("Hello World")
-let libsha = sha.digest("Hello World", "hex")
-console.log(Buffer.from(libsha).toString('hex'))
+sha.update(sampleText)
+let libsha = sha.digest("hex")
+console.log(libsha)
