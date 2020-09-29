@@ -125,7 +125,7 @@ function createSHA1() {
 
 function forgeNewMessage(message, newMessage) {
     let sha = createSHA1()
-     const getH = function(hash) {
+    const getH = function (hash) {
         // hash is a hex encoded string
         hash = hash.padStart(40, 0)
         return [hash.slice(0, 8), hash.slice(8, 16), hash.slice(16, 24), hash.slice(24, 32), hash.slice(32, 40)].map(c => parseInt(c, 16))

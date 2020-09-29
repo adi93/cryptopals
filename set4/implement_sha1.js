@@ -114,7 +114,7 @@ function createSHA1() {
 
 let sha = createSHA1()
 let sampleText = "YELLOW SUBMARINE"
-console.log(s.encrypt(sampleText).toString(16))
+console.log(sha.encrypt(sampleText).toString(16))
 
 let sha = require("crypto").createHash("sha1")
 sha.update(sampleText)

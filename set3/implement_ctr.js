@@ -33,7 +33,7 @@ class oracle {
         return ans
     }
 
-    keySt   ream(counter, nonce) {
+    keyStream(counter, nonce) {
         let bytesTaken = Math.ceil(counter.toString(2).length/8)
         let padding = Array(8-bytesTaken).fill(0)
         let ks = nonce.slice(0)
@@ -48,14 +48,7 @@ class oracle {
     }
 }
 
-
-
-
-
-
-
 o = new oracle()
-
 
 const nonce = Array(8).fill(0)
 const key = "YELLOW SUBMARINE"

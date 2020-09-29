@@ -8,6 +8,13 @@ var data = fs.readFileSync('./set2/10.txt',
 let buff = Buffer.from(data, 'base64')
 
 const key = "YELLOW SUBMARINE"
+function encrypt(buf, key, iv) {
+    let algorithm = 'aes-128-cbc'
+    let cipher = crypto.createCipheriv(algorithm, key, iv)
+    let encrypted = cipher.update(buf)
+    encrypted = Buffer.concat([encrypted, cipher.final()])
+    return encrypted
+}
 function decrypt_cbc(buff, key, iv) {
     assert(buff.length % 16 == 0, "Buffer length should be a buffer of 16")
     let block_size = key.length
